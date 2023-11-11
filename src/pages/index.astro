@@ -1,0 +1,16 @@
+---
+import { Router } from 'react-router-dom';
+import Home from '../components/Home/Home.astro';
+import Nav from '../components/Nav';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Welcome to Astro." >
+    <div  class="text-white  w-full h-5">
+
+            <Nav client:load />        
+            
+    </div>
+
+</Layout>
+
