@@ -21,12 +21,12 @@ const Scroll = ({
   };
 
   return (
-    <span
+    <button
       className="bg-[#1b1e28] cursor-pointer p-2 hover:bg-[#23242f] rounded-md "
       onClick={handleClick}
     >
       {children}
-    </span>
+    </button>
   );
 };
 

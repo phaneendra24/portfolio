@@ -44,8 +44,8 @@ export default function Projects() {
   ];
 
   return (
-    <div className="flex flex-col items-center gap-5" id="projects">
-      <h1 className="flex items-center gap-4">
+    <div className="flex flex-col pt-3 gap-5" id="projects">
+      <h1 className="flex items-center gap-4 bg-blue-500 w-fit p-1">
         projects
         <img src="/rocket.svg" className="w-8 h-8" alt="" />
       </h1>
@@ -99,13 +99,15 @@ export default function Projects() {
         })}
       </div>
 
-      <a
-        href="http://github.com/phaneendra24"
-        target="_blank"
-        className="bg-[#1b1e28] p-2 rounded-md hover:bg-[#0000000e] hover:scale-105"
-      >
-        view more on Github
-      </a>
+      <div className="flex justify-center">
+        <a
+          href="http://github.com/phaneendra24"
+          target="_blank"
+          className="bg-[#1b1e28] w-fit p-2 rounded-md hover:bg-[#0000000e] hover:scale-105"
+        >
+          view more on Github
+        </a>
+      </div>
     </div>
   );
 }

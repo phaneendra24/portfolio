@@ -1,20 +1,159 @@
 ---
-import About from '../components/Home/about';
-import Skills from '../components/Home/skills';
-import Projects from '../components/projects/Projects';
-import Layout from '../layouts/Layout.astro';
+import Icon from "astro-icon";
+import About from "../components/Home/about";
+import Skills from "../components/Home/skills";
+import Footer from "../components/footer/footer";
+import Projects from "../components/projects/Projects";
+import Layout from "../layouts/Layout.astro";
 
+const langauge = [
+  {
+    name: "Javascript",
+    icon: "logos:javascript",
+  },
+  {
+    name: "python",
+    icon: "logos:python",
+  },
+
+  {
+    name: "Java",
+    icon: "logos:java",
+  },
+];
+
+const stack = [
+  {
+    name: "React",
+    icon: "logos:react",
+  },
+  {
+    name: "Nextjs",
+    icon: "logos:nextjs-icon",
+  },
+  {
+    name: "HTML",
+    icon: "vscode-icons:file-type-html",
+  },
+  {
+    name: "CSS",
+    icon: "vscode-icons:file-type-css",
+  },
+  {
+    name: "Tailwindcss",
+    icon: "logos:tailwindcss-icon",
+  },
+  {
+    name: "Express",
+    icon: "simple-icons:express",
+  },
+  {
+    name: "Nodejs",
+    icon: "logos:nodejs-icon",
+  },
+
+  {
+    name: "Typescript",
+    icon: "logos:typescript-icon",
+  },
+  {
+    name: "prisma",
+    icon: "vscode-icons:file-type-light-prisma",
+  },
+  {
+    name: "redux",
+    icon: "logos:redux",
+  },
+];
+
+const dev = [
+  {
+    name: "ubuntu",
+    icon: "logos:ubuntu",
+  },
+  {
+    name: "vscode",
+    icon: "vscode-icons:file-type-vscode",
+  },
+  {
+    name: "Chrome devtools",
+    icon: "logos:chrome",
+  },
+
+  {
+    name: "Postman",
+    icon: "logos:postman-icon",
+  },
+
+  {
+    name: "neovim",
+    icon: "logos:neovim",
+  },
+];
 ---
 
-<Layout title="phaneendra" >
-    <div  class="text-white  w-full h-5">
-            <About />
-            
-            <Skills />
+<script></script>
+
+<Layout title="phaneendra">
+  <div class="text-white w-full h-5">
+    <About />
+
+    <div class="flex flex-col gap-5 my-10">
+      <h1 class="bg-blue-500 w-fit h-fit p-1">Tech stack</h1>
+
+      <div class="flex flex-col gap-3">
+          <div>
+            <h1 class="text-gray-500 w-fit">Language's</h1>
+            <div class="flex gap-5">
+              {
+                langauge.map((i) => {
+                  return (
+                    <span class="flex justify-center items-center gap-1 bg-[#1b1e28] p-2 rounded-lg">
+                      <Icon name={i.icon} class="w-5 h-5" />
+                      {i.name}
+                    </span>
+                  );
+                })
+              }
+            </div>
+          </div>
+
+          <div>
+            <h1 class="text-gray-500 w-fit">web stack</h1>
+            <div class="grid grid-cols-3 sm:grid-cols-4 xl:grid-cols-6 gap-5">
+              {
+                stack.map((i) => {
+                  return (
+                    <span class="flex justify-center items-center gap-1 bg-[#1b1e28] p-2 rounded-lg">
+                      <Icon name={i.icon} class="w-5 h-5" />
+                      {i.name}
+                    </span>
+                  );
+                })
+              }
+            </div>
+          </div>
+
+          <div>
+            <h1 class="text-gray-500 w-fit">Dev workflow</h1>
+            <div class="grid grid-cols-3 sm:grid-cols-4 xl:grid-cols-6 gap-5">
+              {
+                dev.map((i) => {
+                  return (
+                    <span class="flex justify-center items-center gap-1 bg-[#1b1e28] p-2 rounded-lg">
+                      <Icon name={i.icon} class="w-5 h-5" />
+                      {i.name}
+                    </span>
+                  );
+                })
+              }
+            </div>
+          </div>
+      </div>
+    </div>
 
     <Projects />
 
-    </div>
-
+    <Footer />
+  </div>
 </Layout>
-
