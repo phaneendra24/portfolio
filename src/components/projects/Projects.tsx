@@ -44,8 +44,8 @@ export default function Projects() {
   ];
 
   return (
-    <div className="flex flex-col pt-3 gap-5" id="projects">
-      <h1 className="flex items-center gap-4 bg-blue-500 w-fit p-1">
+    <div className="flex flex-col pt-3 gap-1" id="projects">
+      <h1 className="flex items-center gap-4 rounded-lg  bg-blue-500 w-fit p-1">
         projects
         <img src="/rocket.svg" className="w-8 h-8" alt="" />
       </h1>
@@ -58,7 +58,7 @@ export default function Projects() {
                 <h1 className="text-xl">{i.name}</h1>
                 <p>{i.description}</p>
                 <div className="flex flex-col gap-5">
-                  <h1 className="p-1 bg-blue-700 w-fit">stack</h1>
+                  <h1 className="p-1 bg-blue-700 rounded-lg w-fit">stack</h1>
                   <div className=" grid grid-flow-col pr-4 gap-1 ">
                     {i.techstack.map((i) => {
                       return (
@@ -101,7 +101,7 @@ export default function Projects() {
 
       <div className="flex justify-center">
         <a
-          href="http://github.com/phaneendra24"
+          href="https://github.com/phaneendra24?tab=repositories"
           target="_blank"
           className="bg-[#1b1e28] w-fit p-2 rounded-md hover:bg-[#0000000e] hover:scale-105"
         >
