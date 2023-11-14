@@ -1,15 +1,19 @@
 ---
-import { Router } from 'react-router-dom';
-import Home from '../components/Home/Home.astro';
-import Nav from '../components/Nav';
+import About from '../components/Home/about';
+import Skills from '../components/Home/skills';
+import Projects from '../components/projects/Projects';
 import Layout from '../layouts/Layout.astro';
+
 ---
 
-<Layout title="Welcome to Astro." >
+<Layout title="phaneendra" >
     <div  class="text-white  w-full h-5">
-
-            <Nav client:load />        
+            <About />
             
+            <Skills />
+
+    <Projects />
+
     </div>
 
 </Layout>
