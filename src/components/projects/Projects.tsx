@@ -5,7 +5,8 @@ export default function Projects() {
       picture: "bookstore.png",
 
       description:
-        "An app focuses on selling and buying books online. Each user has that ability to both",
+        "A online bookstore like an E-commerce app, empowering users to effortlessly buy and sell books. Enjoy robust features such as personalized wishlists, a convenient shopping cart, and secure authentication, making book browsing, and interactions a delight for every user",
+
 
       techstack: ["Nextjs", "React", "trpc", "Tailwind", "Prisma"],
 
@@ -19,7 +20,7 @@ export default function Projects() {
       picture: "auth.png",
 
       description:
-        "An app focuses on selling and buying books online. Each user has that ability to both",
+        "Developed a Jwt Authentication App using Nextjs, primsa and jwt. Implemented user registration,login using Jwt-based authentication for secure and efficient user authentication",
 
       techstack: ["Nextjs", "React", "trpc", "Tailwind", "Prisma"],
 
@@ -33,7 +34,7 @@ export default function Projects() {
       picture: "strides.png",
 
       description:
-        "An app focuses on selling and buying books online. Each user has that ability to both",
+        "Developed a registration website for the E-Artifact Fest conducted in our college, showcasing activities, event details, and providing a interactive website for the participants",
 
       techstack: ["Nextjs", "React", "trpc", "Tailwind", "Prisma"],
 
