@@ -8,10 +8,6 @@ export default function Nav() {
       url: "about",
     },
     { name: "Projects", url: "projects" },
-    {
-      name: "Resume",
-      url: "https://drive.google.com/file/d/12JoGHaKzZAnPIubXcDM6T1FNenX4negg/view?usp=sharing",
-    },
   ];
 
   return (
@@ -23,6 +19,13 @@ export default function Nav() {
           </Scroll>
         );
       })}
+      <a
+      href="https://drive.google.com/file/d/12JoGHaKzZAnPIubXcDM6T1FNenX4negg/view?usp=sharing"
+      target="_blank"
+      className="p-2 text-center bg-[#1b1e28] rounded-lg"
+      >
+      Resume
+      </a>
     </div>
   );
 }
