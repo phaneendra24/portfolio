@@ -54,7 +54,7 @@ export default function Projects() {
       <div className="flex flex-col gap-5 mt-10">
         {allprojects.map((i) => {
           return (
-            <div className="bg-[#1b1e28] flex flex-col gap-1 sm:flex-row p-4 rounded-md hover:scale-105 hover:transition-all duration-20000">
+            <div className="flex flex-col gap-1 sm:flex-row p-4 rounded-md hover:scale-105 hover:transition-all duration-20000">
               <div className="w-full sm:w-2/3 flex  gap-2 justify-between order-2 flex-col ">
                 <h1 className="text-xl">{i.name}</h1>
                 <p>{i.description}</p>

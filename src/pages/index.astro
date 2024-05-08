@@ -98,21 +98,41 @@ const dev = [
 
 <script></script>
 
+<style>
+  .icon-items:hover{
+    border: 1px solid #6C63FF;
+    transition: 500ms ease-in;
+}
+
+.top-bar{
+  border-top: 1px solid;
+  border
+  border-color: #6C63FF;
+  transition: border 0.5s ease-in;
+}
+.top-bar:hover{
+  border-top: 100%;
+
+}
+</style>
+
 <Layout title="phaneendra">
   <div class="text-white w-full h-5">
     <About />
+
+    <button class="relative top-bar right bottom left">phaneendra</button>
 
     <div class="flex flex-col gap-5 my-10">
       <h1 class="bg-blue-500 rounded-lg w-fit h-fit p-1">Tech stack</h1>
 
       <div class="flex flex-col gap-3">
-          <div>
+          <div class="my-2">
             <h1 class="text-gray-500 w-fit">Language's</h1>
-            <div class="flex gap-5">
+            <div class="flex gap-5 my-2">
               {
                 langauge.map((i) => {
                   return (
-                    <span class="flex justify-center items-center gap-1 bg-[#1b1e28] p-2 rounded-lg">
+                    <span class="icon-items flex justify-center items-center gap-1 bg-[#1b1e28] p-2 rounded-lg">
                       <Icon name={i.icon} class="w-5 h-5" />
                       {i.name}
                     </span>

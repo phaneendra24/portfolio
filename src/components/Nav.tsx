@@ -20,7 +20,7 @@ export default function Nav() {
         );
       })}
       <a
-      href="https://drive.google.com/file/d/12JoGHaKzZAnPIubXcDM6T1FNenX4negg/view?usp=sharing"
+        href="https://drive.google.com/file/d/10pDHOZ2b9FRfw3FPPs15j95o0LFH65u9/view?usp=sharing"
       target="_blank"
       className="p-2 text-center bg-[#1b1e28] rounded-lg"
       >
