@@ -1,0 +1,63 @@
+.terminal-window {
+  background-color: #24283b;
+  border: 1px solid #414868;
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #bb9af7;
+  width: 100%;
+}
+
+.command-input-container {
+  display: inline-flex;
+  width: calc(100% - 180px);
+}
+
+.prompt-user {
+  color: #7aa2f7;
+}
+.prompt-symbol {
+  color: #c0caf5;
+}
+.command {
+  color: #bb9af7;
+}
+.output-text {
+  color: #a9b1d6;
+}
+.project-name {
+  color: #7dcfff;
+}
+.tech-stack {
+  color: #73daca;
+}
+.contact-link {
+  color: #e0af68;
+  text-decoration: none;
+}
+.contact-link:hover {
+  text-decoration: underline;
+}
+.error {
+  color: #f7768e;
+}
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1.2em;
+  background-color: #c0caf5;
+  animation: blink 1s step-end infinite;
+  vertical-align: bottom;
+}
+@keyframes blink {
+  from,
+  to {
+    background-color: transparent;
+  }
+  50% {
+    background-color: #c0caf5;
+  }
+}
