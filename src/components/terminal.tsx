@@ -1,238 +1,362 @@
-import React, { useEffect, useRef } from 'react';
-import './Terminal.css'; // Move styles from <style> tag into a CSS file (see below)
+//src="https://media1.tenor.com/m/xDxQcEqYO-gAAAAC/kika-rune-kika.gif"
+import React, {
+  Children,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import './Terminal.css'; // Your existing CSS file
+
+// =================================================================
+// 1. Define Output Components
+// Each command's output is its own component.
+// =================================================================
+
+const WhoamiOutput: React.FC = () => (
+  <div>
+    <strong className="text-xl text-white">
+      Phaneendra Pilli. Full Stack Developer.
+    </strong>
+    <div className="flex gap-2 mt-3">
+      <img src="/me.jpeg" alt="penguin" className="w-24 h-24 rounded-md" />
+      <p className="mt-2">
+        You could say I have a healthy obsession with building things. From
+        complex software platforms to a streamlined command-line workflow, I’m
+        driven by the process of turning a great idea into an efficient reality.
+      </p>
+    </div>
+  </div>
+);
+
+const ProjectsOutput: React.FC = () => (
+  <div className="flex flex-col gap-4">
+    {/* <div>
+      <span className="project-name">
+        -rw-r--r-- 1 phaneendra dev 4.2K Oct 13 20:00
+        InterviewBuddy_Website_Relaunch
+      </span>
+      <span className="output-text">
+        Sole developer for the company's revamped website. Built from scratch
+        using Next.js, engineered payment systems with Razorpay/PayPal, and
+        deployed in a Dockerized environment.
+      </span>
+      <span className="tech-stack">
+        [Next.js] [TypeScript] [PostgreSQL] [Docker] [Nginx]
+      </span>
+    </div>
+    <div>
+      <span className="project-name">
+        -rw-r--r-- 1 phaneendra dev 3.8K Jul 22 14:30 B2C_Interview_Platform
+      </span>
+      <span className="output-text">
+        Lead developer for the B2C portal. Architected and built core features
+        including real-time video interviews with Twilio, secure assessments,
+        and complex booking flows.
+      </span>
+      <span className="tech-stack">
+        [Angular] [NestJS] [Twilio] [FFmpeg] [WebSockets]
+      </span>
+    </div> */}
+    yet to be decided
+  </div>
+);
+
+const ContactOutput: React.FC = () => (
+  <div className="grid grid-cols-[auto_1fr] gap-x-4">
+    <span className="output-text">github:</span>
+    <a
+      href="https://github.com/phaneendra24"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="contact-link"
+    >
+      github.com/phaneendra24
+    </a>
+    <span className="output-text">linkedin:</span>
+    <a
+      href="https://linkedin.com/in/phaneendra-pilli/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="contact-link"
+    >
+      linkedin.com/in/phaneendra-pilli
+    </a>
+    <span className="output-text">email:</span>
+    <a href="mailto:phaneendrapilli777@gmail.com" className="contact-link">
+      phaneendrapilli777@gmail.com
+    </a>
+  </div>
+);
+
+// The 'help' and 'ls' commands are dynamic, so they take props
+interface HelpOutputProps {
+  commands: Record<string, { description: string }>;
+}
+
+const HelpOutput: React.FC<HelpOutputProps> = ({ commands }) => (
+  <div>
+    <span className="output-text">Available commands:</span>
+    {Object.entries(commands).map(([cmd, { description }]) => (
+      <div key={cmd}>
+        <span className="command">{cmd.padEnd(10)}</span>
+        <span className="output-text">- {description}</span>
+      </div>
+    ))}
+  </div>
+);
+
+const CommandNotFound: React.FC<{ command: string }> = ({ command }) => (
+  <div>
+    <span className="error">bash: command not found: {command}</span>
+    <span className="output-text">
+      Try 'help' for a list of available commands.
+    </span>
+  </div>
+);
+
+// =================================================================
+// 2. Main Terminal Component
+// =================================================================
+const AnimationLayoutForCommand = ({ children }: { children: ReactNode }) => {
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }} // Start invisible and slightly down
+        animate={{ opacity: 1, y: 0 }} // Animate to fully visible and original position
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        className="mb-2"
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  );
+};
 
 const Terminal: React.FC = () => {
-  const terminalBodyRef = useRef<HTMLDivElement | null>(null);
+  const [lines, setLines] = useState<React.ReactNode[]>([]);
+  const [input, setInput] = useState('');
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [showPenguin, setShowPenguin] = useState(false);
 
-  const typingDelay = 50;
-  const commandDelay = 500;
+  const terminalBodyRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const commands: Record<string, { description: string; output: string }> = {
-    whoami: {
-      description: 'A little bit about me.',
-      output: `
-<strong class="text-xl text-white">Phaneendra Pilli. Full Stack Developer.</strong>
+  // Store commands in a memoized object
+  const commands = React.useMemo(
+    () => ({
+      whoami: {
+        description: 'A little bit about me.',
+        output: (
+          <AnimationLayoutForCommand>
+            <WhoamiOutput />
+          </AnimationLayoutForCommand>
+        ),
+      },
+      projects: {
+        description: 'View my professional work.',
+        output: (
+          <AnimationLayoutForCommand>
+            <ProjectsOutput />
+          </AnimationLayoutForCommand>
+        ),
+      },
+      contact: {
+        description: 'How to get in touch.',
+        output: (
+          <AnimationLayoutForCommand>
+            <ContactOutput />
+          </AnimationLayoutForCommand>
+        ),
+      },
+      help: {
+        description: 'Lists all available commands.',
+        output: (
+          <AnimationLayoutForCommand>
+            <HelpOutput commands={{}} />
+          </AnimationLayoutForCommand>
+        ),
+      },
+      clear: { description: 'Clears the terminal screen.', output: null }, // 'clear' is a special case
+    }),
+    []
+  );
 
-You could say I have a healthy obsession with building things. From complex software platforms to a streamlined command-line workflow, I’m driven by the process of turning a great idea into an efficient reality.
-`,
-    },
-    projects: {
-      description: 'View my professional work.',
-      output: `
-<span class="project-name">-rw-r--r-- 1 phaneendra dev 4.2K Oct 13 20:00 InterviewBuddy_Website_Relaunch</span>
-  <span class="output-text">Sole developer for the company's revamped website. Built from scratch using Next.js, engineered payment systems with Razorpay/PayPal, and deployed in a Dockerized environment.</span>
-  <span class="tech-stack">[Next.js] [TypeScript] [PostgreSQL] [Docker] [Nginx]</span>
+  // Populate dynamic 'help' command output
+  commands.help.output = <HelpOutput commands={commands} />;
 
-<span class="project-name">-rw-r--r-- 1 phaneendra dev 3.8K Jul 22 14:30 B2C_Interview_Platform</span>
-  <span class="output-text">Lead developer for the B2C portal. Architected and built core features including real-time video interviews with Twilio, secure assessments, and complex booking flows.</span>
-  <span class="tech-stack">[Angular] [NestJS] [Twilio] [FFmpeg] [WebSockets]</span>
-`,
-    },
-    contact: {
-      description: 'How to get in touch.',
-      output: `
-  <span class="output-text">github:</span>     <a href="https://github.com/phaneendra24" target="_blank" class="contact-link">github.com/phaneendra24</a>
-  <span class="output-text">linkedin:</span>   <a href="https://linkedin.com/in/phaneendra-pilli/" target="_blank" class="contact-link">linkedin.com/in/phaneendra-pilli</a>
-  <span class="output-text">email:</span>      <a href="mailto:phaneendrapilli777@gmail.com" class="contact-link">phaneendrapilli777@gmail.com</a>
-`,
-    },
-    help: {
-      description: 'Lists all available commands.',
-      output: '',
-    },
-    ls: {
-      description: 'Lists all available commands.',
-      output: '',
-    },
-    clear: {
-      description: 'Clears the terminal screen.',
-      output: '',
-    },
+  // Aliases for commands
+  const aliasedCommands = {
+    ls: commands.help,
   };
 
-  commands.ls.output =
-    '\n<span class="output-text">Available commands:</span>\n' +
-    Object.keys(commands)
-      .map(
-        (cmd) =>
-          `  <span class="command">${cmd.padEnd(
-            10
-          )}</span> - <span class="output-text">${
-            commands[cmd].description
-          }</span>`
-      )
-      .join('\n') +
-    '\n';
+  // Focus input on click anywhere in the terminal
+  const focusInput = () => inputRef.current?.focus();
 
-  commands.help.output =
-    '\n<span class="output-text">Available commands:</span>\n' +
-    Object.keys(commands)
-      .map(
-        (cmd) =>
-          `  <span class="command">${cmd.padEnd(
-            10
-          )}</span> - <span class="output-text">${
-            commands[cmd].description
-          }</span>`
-      )
-      .join('\n') +
-    '\n';
+  useEffect(focusInput, []);
 
-  const scrollToBottom = () => {
+  // Auto-scroll to bottom
+  useEffect(() => {
     const el = terminalBodyRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  };
-
-  const appendOutput = (html: string) => {
-    const el = terminalBodyRef.current;
-    if (!el) return;
-    const outputEl = document.createElement('div');
-    outputEl.innerHTML = html;
-    el.appendChild(outputEl);
-    scrollToBottom();
-  };
-
-  const createPrompt = (isInteractive = false) => {
-    const promptContainer = document.createElement('div');
-    promptContainer.classList.add('flex');
-    promptContainer.classList.add('gap-1');
-    let content =
-      '<span class="prompt-user">phaneendra@portfolio</span><span class="prompt-symbol">:~$</span> ';
-    if (isInteractive) {
-      content += `
-          <span class="command-input-container">
-            <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" />
-          </span>
-          `;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
     }
-    promptContainer.innerHTML = content;
-    return promptContainer;
-  };
+  }, [lines]);
 
-  const processCommand = (command: string) => {
-    const el = terminalBodyRef.current;
-    if (!el) return;
+  // Initial animation sequence
+  useEffect(() => {
+    const runInitialSequence = async () => {
+      const initialCommands = ['whoami', 'projects', 'contact'];
+      for (const command of initialCommands) {
+        // Add the command line
+        setLines((prev) => [
+          ...prev,
+          <Prompt key={`prompt-${prev.length}`} command={command} />,
+        ]);
+        await new Promise((res) => setTimeout(res, 500)); // Wait before showing output
+        // Add the output
+        setLines((prev) => [
+          ...prev,
+          <div key={`output-${prev.length}`}>{commands[command].output}</div>,
+        ]);
+        await new Promise((res) => setTimeout(res, 800)); // Wait before next command
+      }
+      // Add final help message
+      setLines((prev) => [
+        ...prev,
+        <div key={`final-msg-${prev.length}`} className="output-text mt-4">
+          Type `help` to see the list of available commands.
+        </div>,
+      ]);
+    };
+    runInitialSequence();
+  }, [commands]); // Rerun if commands object changes
 
+  const handleCommandSubmit = (command: string) => {
     if (!command) return;
 
-    if (commands[command]) {
-      if (command === 'clear') {
-        el.innerHTML = '';
-      } else {
-        appendOutput(commands[command].output);
-      }
+    // Add executed command to the history
+    const newHistory = [command, ...history];
+    setHistory(newHistory);
+    setHistoryIndex(-1);
+
+    // Add the prompt with the executed command to the lines
+    setLines((prev) => [...prev, <Prompt command={command} />]);
+
+    const cmd = aliasedCommands[command] || commands[command];
+
+    if (command === 'clear') {
+      setLines([]);
+    } else if (cmd) {
+      setLines((prev) => [...prev, <div key={prev.length}>{cmd.output}</div>]);
     } else {
-      appendOutput(
-        `<span class="error">bash: command not found: ${command}</span>\n<span class="output-text">Try 'help' for a list of available commands.</span>`
-      );
+      setLines((prev) => [
+        ...prev,
+        <CommandNotFound key={prev.length} command={command} />,
+      ]);
     }
   };
 
-  const createNewInteractiveLine = () => {
-    const el = terminalBodyRef.current;
-    if (!el) return;
-
-    const newLine = createPrompt(true);
-    el.appendChild(newLine);
-
-    const currentInput =
-      newLine.querySelector<HTMLInputElement>('#terminal-input');
-    currentInput?.focus();
-
-    currentInput?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const command = currentInput.value.trim();
-
-        const staticLine = currentInput.closest('div');
-        if (staticLine) {
-          staticLine.innerHTML = `<span class="prompt-user">phaneendra@portfolio</span><span class="prompt-symbol">:~$</span> <span class="command">${command}</span>`;
-        }
-
-        processCommand(command);
-        createNewInteractiveLine();
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleCommandSubmit(input.trim());
+      setInput('');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex < history.length - 1) {
+        const newIndex = historyIndex + 1;
+        setHistoryIndex(newIndex);
+        setInput(history[newIndex]);
       }
-    });
-  };
-
-  const typeText = (element: HTMLElement, text: string): Promise<void> => {
-    return new Promise((resolve) => {
-      let i = 0;
-      const type = () => {
-        if (i < text.length) {
-          element.textContent += text.charAt(i);
-          i++;
-          scrollToBottom();
-          setTimeout(type, typingDelay);
-        } else {
-          resolve();
-        }
-      };
-      type();
-    });
-  };
-
-  const runInitialSequence = async () => {
-    const el = terminalBodyRef.current;
-    if (!el) return;
-
-    const initialCommands = ['whoami', 'projects', 'contact'];
-
-    for (const command of initialCommands) {
-      const promptEl = createPrompt();
-      el.appendChild(promptEl);
-
-      const commandSpan = document.createElement('span');
-      commandSpan.className = 'command';
-      promptEl.appendChild(commandSpan);
-
-      await typeText(commandSpan, command);
-      await new Promise((resolve) => setTimeout(resolve, commandDelay / 2));
-      appendOutput(commands[command].output);
-      await new Promise((resolve) => setTimeout(resolve, commandDelay));
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        const newIndex = historyIndex - 1;
+        setHistoryIndex(newIndex);
+        setInput(history[newIndex]);
+      } else {
+        setHistoryIndex(-1);
+        setInput('');
+      }
+    } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+      e.preventDefault();
+      setLines([]);
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      handleCommandSubmit('ls');
     }
-
-    appendOutput(
-      '\n<span class="output-text">Type `help` to see the list of available commands.</span>'
-    );
-    createNewInteractiveLine();
   };
-
-  useEffect(() => {
-    runInitialSequence();
-    const handleKeyDown = (event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'l') {
-        event.preventDefault(); // Prevent browser default (address bar focus)
-        console.log('Ctrl+L or Cmd+L pressed!');
-        processCommand('clear');
-
-        createNewInteractiveLine();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   return (
-    <div className="w-full ">
-      <div className="bg-red-600 w-full text-center text-white">
+    <div className="w-full" onClick={focusInput}>
+      <div className="flex justify-center items-center gap-5 mt-3 bg-red-600 mb-3 ">
         Site is under construction
       </div>
-      <div
-        className="terminal-window max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl overflow-hidden"
-        onClick={() => {
-          const input = document.getElementById(
-            'terminal-input'
-          ) as HTMLInputElement | null;
-          input?.focus();
-        }}
-      >
+      <div className="terminal-window max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative">
+        {/* Your AnimatePresence and Penguin popup JSX can remain here */}
+        <AnimatePresence>
+          {showPenguin && (
+            <motion.div
+              key="penguin"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{
+                type: 'spring',
+                stiffness: 100,
+                damping: 14,
+              }}
+              className="absolute -top-32  left-0 right-0 z-[100] flex items-center justify-between  rounded-b-xl shadow-2xl p-6"
+            >
+              <img
+                src="https://media.tenor.com/staU78dYIK4AAAAi/working-work.gif"
+                alt="Tux Penguin"
+                className="w-20 h-20 animate-bounce-slow"
+              />
+              <div className="relative mt-3 text-center text-gray-200 font-mono text-base bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
+                Maybe you want to view my resume?
+              </div>
+              <a
+                href="https://your-public-resume-link.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                View Resume
+              </a>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Terminal Header */}
-        <div className="bg-gray-800 px-4 py-2 flex items-center">
+        <div className="bg-gray-800 px-4 py-2 flex items-center rounded-t-xl relative z-20">
+          {/* Window Controls */}
           <div className="flex space-x-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div
+              onClick={() => setShowPenguin(!showPenguin)}
+              className="w-3 h-3 rounded-full bg-red-500 cursor-pointer"
+            ></div>
+            <div
+              className="w-3 h-3 rounded-full bg-yellow-500"
+              onMouseEnter={() => setShowPenguin(true)}
+            ></div>
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
           </div>
           <div className="flex-grow text-center text-sm text-gray-400">
@@ -242,13 +366,63 @@ You could say I have a healthy obsession with building things. From complex soft
 
         {/* Terminal Body */}
         <div
-          id="terminal-body"
           ref={terminalBodyRef}
           className="p-6 text-sm sm:text-base whitespace-pre-wrap min-h-[600px] overflow-y-auto"
-        ></div>
+        >
+          {lines.map((line, index) => (
+            <div key={index} className="mb-2">
+              {line}
+            </div>
+          ))}
+          <Prompt
+            command={input}
+            isInput={true}
+            inputRef={inputRef}
+            onKeyDown={handleKeyDown}
+            onChange={(e) => setInput(e.target.value)}
+          />
+        </div>
       </div>
     </div>
   );
 };
+
+// =================================================================
+// 3. Helper Component for the Prompt Line
+// =================================================================
+
+interface PromptProps {
+  command?: string;
+  isInput?: boolean;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const Prompt: React.FC<PromptProps> = ({
+  command,
+  isInput = false,
+  inputRef,
+  onKeyDown,
+  onChange,
+}) => (
+  <div className="flex gap-1 items-center">
+    <span className="prompt-user">phaneendra@portfolio</span>
+    <span className="prompt-symbol">:~$</span>
+    {isInput ? (
+      <input
+        ref={inputRef}
+        type="text"
+        value={command}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        className="terminal-input flex-1"
+        autoComplete="off"
+      />
+    ) : (
+      <span className="command">{command}</span>
+    )}
+  </div>
+);
 
 export default Terminal;
