@@ -17,10 +17,10 @@ import './Terminal.css'; // Your existing CSS file
 
 const WhoamiOutput: React.FC = () => (
   <div>
-    <strong className="text-xl text-white">
+    <strong className="text-base  sm:text-xl text-white">
       Phaneendra Pilli. Full Stack Developer.
     </strong>
-    <div className="flex gap-2 mt-3">
+    <div className="flex gap-2 mt-3 items-center">
       <img src="/me.jpeg" alt="penguin" className="w-24 h-24 rounded-md" />
       <p className="mt-2">
         You could say I have a healthy obsession with building things. From
@@ -292,10 +292,7 @@ const Terminal: React.FC = () => {
 
   return (
     <div className="w-full" onClick={focusInput}>
-      <div className="flex justify-center items-center gap-5 mt-3 bg-red-600 mb-3 ">
-        Site is under construction
-      </div>
-      <div className="terminal-window max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative">
+      <div className="terminal-window max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative max-sm:max-w-[90%]">
         {/* Your AnimatePresence and Penguin popup JSX can remain here */}
         <AnimatePresence>
           {showPenguin && (
@@ -316,7 +313,7 @@ const Terminal: React.FC = () => {
                 alt="Tux Penguin"
                 className="w-20 h-20 animate-bounce-slow"
               />
-              <div className="relative mt-3 text-center text-gray-200 font-mono text-base bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
+              <div className=" max-sm:hidden relative mt-3 text-center text-gray-200 font-mono text-base bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
                 Maybe you want to view my resume?
               </div>
               <a
