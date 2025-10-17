@@ -291,7 +291,7 @@ const Terminal: React.FC = () => {
   };
 
   return (
-    <div className="w-full" onClick={focusInput}>
+    <div className="w-full">
       <div className="terminal-window max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative max-sm:max-w-[90%]">
         {/* Your AnimatePresence and Penguin popup JSX can remain here */}
         <AnimatePresence>
@@ -365,6 +365,7 @@ const Terminal: React.FC = () => {
         <div
           ref={terminalBodyRef}
           className="p-6 text-sm sm:text-base whitespace-pre-wrap min-h-[600px] overflow-y-auto"
+          onClick={focusInput}
         >
           {lines.map((line, index) => (
             <div key={index} className="mb-2">
