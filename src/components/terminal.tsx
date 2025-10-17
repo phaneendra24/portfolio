@@ -131,7 +131,7 @@ const AnimationLayoutForCommand = ({ children }: { children: ReactNode }) => {
       <motion.div
         initial={{ opacity: 0, y: 10 }} // Start invisible and slightly down
         animate={{ opacity: 1, y: 0 }} // Animate to fully visible and original position
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: 'linear' }}
         className="mb-2"
       >
         {children}
@@ -146,6 +146,7 @@ const Terminal: React.FC = () => {
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [showPenguin, setShowPenguin] = useState(false);
+  const [ShowMailMe, setShowMailMe] = useState(false);
 
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -297,9 +298,9 @@ const Terminal: React.FC = () => {
 
   return (
     <div
-      className={`w-full h-screen flex sm:items-center mt-10 ${
-        showPenguin
-          ? 'translate-y-32  transition-all duration-300 ease-linear '
+      className={`w-full h-screen flex sm:items-center mt-10 transition-all duration-300 ease-linear ${
+        showPenguin || ShowMailMe
+          ? 'max-sm:translate-y-24  transition-all duration-300 ease-linear '
           : ''
       }`}
     >
@@ -317,21 +318,21 @@ const Terminal: React.FC = () => {
                 stiffness: 100,
                 damping: 14,
               }}
-              className="absolute -top-32  left-0 right-0 z-[100] flex items-center justify-between  rounded-b-xl shadow-2xl p-6"
+              className="absolute -top-32  left-0 right-0 z-[100] grid grid-cols-3  rounded-b-xl shadow-2xl sm:p-6"
             >
               <img
                 src="https://media.tenor.com/staU78dYIK4AAAAi/working-work.gif"
                 alt="Tux Penguin"
-                className="w-20 h-20 animate-bounce-slow "
+                className="w-20 order-2 max-sm:col-span-2 sm:order-1 h-20 animate-bounce-slow "
               />
-              <div className=" max-sm:hidden relative mt-3 text-center text-gray-200 font-mono text-base bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
+              <div className="order-1 sm:order-2 text-left w-full max-sm:col-span-3 text-xs  relative mt-3  text-gray-200 font-mono  sm:bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
                 Maybe you want to view my resume?
               </div>
               <a
                 href="https://your-public-resume-link.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
+                className="mt-3 order-3 col-span-1 flex justify-end items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -353,19 +354,74 @@ const Terminal: React.FC = () => {
           )}
         </AnimatePresence>
 
+        <AnimatePresence>
+          {ShowMailMe && (
+            <motion.div
+              key="mailme"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{
+                type: 'spring',
+                stiffness: 100,
+                damping: 14,
+              }}
+              className="absolute -top-32  left-0 right-0 z-[100] flex items-center justify-between  rounded-b-xl shadow-2xl p-6"
+            >
+              <div className=" max-sm:hidden relative mt-3 text-center text-gray-200 font-mono text-base bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
+                Maybe you want to Email me?
+              </div>
+              <a
+                href="mailto:phaneendrapilli777@gmail.com"
+                rel="noopener noreferrer"
+                className="mt-3 flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
+              >
+                <div className="box" data-state={ShowMailMe} />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.4,
+                    scale: { type: 'spring', visualDuration: 0.4, bounce: 0.5 },
+                  }}
+                >
+                  <img
+                    src="/mail.png"
+                    alt="Mail icon"
+                    className="w-10 h-10 bg-transparent "
+                  />
+                </motion.div>
+                @phaneendrapilli777
+              </a>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Terminal Header */}
         <div className="bg-gray-800 px-4 py-2 flex items-center rounded-t-xl relative z-20">
           {/* Window Controls */}
           <div className="flex space-x-2">
             <div
-              onClick={() => setShowPenguin(!showPenguin)}
+              onClick={() => {
+                setShowPenguin(false);
+                setShowMailMe(false);
+              }}
               className="w-3 h-3 rounded-full bg-red-500 cursor-pointer"
             ></div>
             <div
-              className="w-3 h-3 rounded-full bg-yellow-500"
-              onMouseEnter={() => setShowPenguin(true)}
+              className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer"
+              onClick={() => {
+                setShowMailMe(false);
+                setShowPenguin(true);
+              }}
             ></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            <div
+              className="w-3 h-3 rounded-full bg-green-500 cursor-pointer"
+              onClick={() => {
+                setShowPenguin(false);
+                setShowMailMe(true);
+              }}
+            ></div>
           </div>
           <div className="flex-grow text-center text-sm text-gray-400">
             phaneendra -- -bash
