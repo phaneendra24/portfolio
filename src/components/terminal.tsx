@@ -7,7 +7,7 @@ import React, {
   type KeyboardEvent,
   type ReactNode,
 } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import './Terminal.css'; // Your existing CSS file
 
 // =================================================================
@@ -15,26 +15,49 @@ import './Terminal.css'; // Your existing CSS file
 // Each command's output is its own component.
 // =================================================================
 
-const WhoamiOutput: React.FC = () => (
-  <div>
-    <strong className="text-base  sm:text-xl text-white">
-      Phaneendra Pilli. Full Stack Developer.
-    </strong>
-    <div className="flex gap-2 mt-3 items-center">
-      <img
-        src="/me.jpeg"
-        alt="penguin"
-        loading="lazy"
-        className="w-24 min-w-[96px] h-24 rounded-md"
-      />
-      <p className="mt-2">
-        You could say I have a healthy obsession with building things. From
-        complex software platforms to a streamlined command-line workflow, I’m
-        driven by the process of turning a great idea into an efficient reality.
-      </p>
+const WhoamiOutput: React.FC = () => {
+  const ref = React.useRef(null);
+
+  const isInView = useInView(ref, { once: true });
+
+  const text =
+    'You could say I have a healthy obsession with building things. From complex software platforms to a streamlined command-line workflow, I’m driven by the process of turning a great idea into an efficient reality.';
+  return (
+    <div>
+      <strong className="text-base  sm:text-xl text-white">
+        Phaneendra Pilli. Full Stack Developer.
+      </strong>
+      <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:items-center">
+        <motion.h2
+          ref={ref}
+          initial={{ filter: 'blur(20px)', opacity: 0 }}
+          animate={isInView ? { filter: 'blur(0px)', opacity: 1 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-xl text-center sm:text-4xl font-bold tracking-tighter md:text-6xl md:leading-[4rem]"
+        >
+          <img
+            src="/me.jpeg"
+            alt="penguin"
+            loading="lazy"
+            className="w-24 min-w-[96px] h-24 rounded-md"
+          />
+        </motion.h2>
+        <p className="mt-2 text-white w-full" ref={ref}>
+          {text.split('').map((letter, index) => (
+            <motion.span
+              key={index}
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.1, delay: index * 0.025 }}
+            >
+              {letter}
+            </motion.span>
+          ))}
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ProjectsOutput: React.FC = () => (
   <div className="flex flex-col gap-4">
@@ -304,7 +327,9 @@ const Terminal: React.FC = () => {
           : ''
       }`}
     >
-      <div className="terminal-window h-fit  max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative max-sm:max-w-[90%]">
+      <div
+        className={`bg-[#24283b] border border-[#414868] terminal-window h-fit  max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative max-sm:max-w-[90%]`}
+      >
         {/* Your AnimatePresence and Penguin popup JSX can remain here */}
         <AnimatePresence>
           {showPenguin && (
