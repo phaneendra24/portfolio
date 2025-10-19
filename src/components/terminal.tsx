@@ -9,6 +9,13 @@ import React, {
 } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import './Terminal.css'; // Your existing CSS file
+import ExperienceCard from './experience-card';
+
+type commandType = 'whoami' | 'experience' | 'contact' | 'help' | 'clear';
+type aliasedCommandType = 'ls';
+const aliasedCommandList = ['ls'] as const;
+const initialCommands: commandType[] = ['whoami', 'experience', 'contact'];
+// const initialCommands: commandType[] = ['experience'];
 
 // =================================================================
 // 1. Define Output Components
@@ -59,7 +66,7 @@ const WhoamiOutput: React.FC = () => {
   );
 };
 
-const ProjectsOutput: React.FC = () => (
+const ExperienceOutput: React.FC = () => (
   <div className="flex flex-col gap-4">
     {/* <div>
       <span className="project-name">
@@ -88,7 +95,7 @@ const ProjectsOutput: React.FC = () => (
         [Angular] [NestJS] [Twilio] [FFmpeg] [WebSockets]
       </span>
     </div> */}
-    yet to be decided
+    <ExperienceCard />
   </div>
 );
 
@@ -185,11 +192,11 @@ const Terminal: React.FC = () => {
           </AnimationLayoutForCommand>
         ),
       },
-      projects: {
+      experience: {
         description: 'View my professional work.',
         output: (
           <AnimationLayoutForCommand>
-            <ProjectsOutput />
+            <ExperienceOutput />
           </AnimationLayoutForCommand>
         ),
       },
@@ -236,9 +243,9 @@ const Terminal: React.FC = () => {
   }, [lines]);
 
   // Initial animation sequence
+
   useEffect(() => {
     const runInitialSequence = async () => {
-      const initialCommands = ['whoami', 'projects', 'contact'];
       for (const command of initialCommands) {
         // Add the command line
         setLines((prev) => [
@@ -264,7 +271,7 @@ const Terminal: React.FC = () => {
     runInitialSequence();
   }, [commands]); // Rerun if commands object changes
 
-  const handleCommandSubmit = (command: string) => {
+  const handleCommandSubmit = (command: commandType | aliasedCommandType) => {
     if (!command) return;
 
     // Add executed command to the history
@@ -275,7 +282,14 @@ const Terminal: React.FC = () => {
     // Add the prompt with the executed command to the lines
     setLines((prev) => [...prev, <Prompt command={command} />]);
 
-    const cmd = aliasedCommands[command] || commands[command];
+    // Type guard for runtime checking
+    function isAliasedCommand(cmd: string): cmd is aliasedCommandType {
+      return (aliasedCommandList as readonly string[]).includes(cmd);
+    }
+
+    const cmd = isAliasedCommand(command)
+      ? aliasedCommands[command]
+      : commands[command];
 
     if (command === 'clear') {
       setLines([]);
@@ -291,7 +305,7 @@ const Terminal: React.FC = () => {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleCommandSubmit(input.trim().toLowerCase());
+      handleCommandSubmit(input.trim().toLowerCase() as any);
       setInput('');
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
@@ -321,14 +335,14 @@ const Terminal: React.FC = () => {
 
   return (
     <div
-      className={`w-full h-screen flex sm:items-center mt-10 transition-all duration-300 ease-linear ${
+      className={`w-full h-screen flex sm:items-center mt-5 transition-all duration-300 ease-linear ${
         showPenguin || ShowMailMe
           ? 'max-sm:translate-y-24  transition-all duration-300 ease-linear '
           : ''
       }`}
     >
       <div
-        className={`bg-[#24283b] border border-[#414868] terminal-window h-fit  max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative max-sm:max-w-[90%]`}
+        className={`bg-[#24283b] border border-[#414868] terminal-window h-fit  max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative max-sm:max-w-[90%] transition-all duration-100`}
       >
         {/* Your AnimatePresence and Penguin popup JSX can remain here */}
         <AnimatePresence>
@@ -471,6 +485,7 @@ const Terminal: React.FC = () => {
             onKeyDown={handleKeyDown}
             onChange={(e) => setInput(e.target.value)}
           />
+          {lines.length === 0 && "Try 'help' for commands"}
         </div>
       </div>
     </div>
