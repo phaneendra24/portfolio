@@ -63,17 +63,17 @@ export default function ExperienceCard() {
   );
   return (
     <Container>
-      <div className="p-4 w-full center">
-        {/* <CardBody /> */}
+      <div className=" w-full center">
         <motion.div className="flex-1" variants={containerVariants}>
           <motion.div variants={itemVariants}>
-            <span className="text-pink-400 font-bold">Phaneendra Pilli</span>
-            <span className="text-white">@</span>
-            <span className="text-green-400">InterviewBuddy</span>
+            <span className="text-green-400 ">
+              InterviewBuddy (July 2024- Present)
+            </span>
           </motion.div>
+
           <motion.div
             variants={itemVariants}
-            className="w-32 border-b border-gray-600 my-2"
+            className="w-full border-b border-dashed border-gray-700 my-3"
           ></motion.div>
 
           <motion.div
@@ -123,6 +123,47 @@ export default function ExperienceCard() {
               ))}
             </div>
           </motion.div>
+        </motion.div>
+
+        {/* ✨ INTERNSHIP SECTION ADDED BELOW ✨ */}
+        <motion.div
+          variants={itemVariants}
+          className="w-full border-b border-dashed border-gray-700 my-3"
+        ></motion.div>
+
+        <motion.div variants={itemVariants}>
+          <span className="text-green-400 ">
+            InterviewBuddy (Jan 2024- Jun 2024)
+          </span>
+        </motion.div>
+
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-[auto_1fr] gap-x-4 text-sm"
+        >
+          <span className="text-pink-400 font-bold">Role:</span>
+          <span className="text-white">Full Stack Developer Intern</span>
+
+          <span className="text-pink-400 font-bold">Period:</span>
+          <span className="text-white">Jun 2024 - Oct 2024</span>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="mt-4 text-sm">
+          <p className="text-pink-400 font-bold mb-2">Highlights:</p>
+          <ul className="list-none text-white pl-2">
+            <li>
+              <span className="text-cyan-400 mr-2">{'>'}</span>Contributed to
+              front-end features using Angular.
+            </li>
+            <li>
+              <span className="text-cyan-400 mr-2">{'>'}</span>Assisted in the
+              development of RESTful API endpoints with NestJS.
+            </li>
+            <li>
+              <span className="text-cyan-400 mr-2">{'>'}</span>Gained hands-on
+              experience with Docker and the full development lifecycle.
+            </li>
+          </ul>
         </motion.div>
       </div>
     </Container>

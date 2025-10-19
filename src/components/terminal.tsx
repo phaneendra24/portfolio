@@ -180,6 +180,7 @@ const Terminal: React.FC = () => {
 
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
 
   // Store commands in a memoized object
   const commands = React.useMemo(
@@ -267,6 +268,8 @@ const Terminal: React.FC = () => {
           Type `help` to see the list of available commands.
         </div>,
       ]);
+
+      scrollToBottom();
     };
     runInitialSequence();
   }, [commands]); // Rerun if commands object changes
@@ -301,6 +304,18 @@ const Terminal: React.FC = () => {
         <CommandNotFound key={prev.length} command={command} />,
       ]);
     }
+
+    scrollToBottom();
+  };
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (inputRef.current) {
+        // terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+
+        inputRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 0);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -335,14 +350,15 @@ const Terminal: React.FC = () => {
 
   return (
     <div
-      className={`w-full h-screen flex sm:items-center mt-5 transition-all duration-300 ease-linear ${
+      className={`w-full h-screen flex sm:items-center mt-5 transition-all duration-300 ease-linear   ${
         showPenguin || ShowMailMe
           ? 'max-sm:translate-y-24  transition-all duration-300 ease-linear '
           : ''
       }`}
     >
       <div
-        className={`bg-[#24283b] border border-[#414868] terminal-window h-fit  max-w-4xl min-w-[50%] mx-auto rounded-lg shadow-2xl relative max-sm:max-w-[90%] transition-all duration-100`}
+        ref={terminalRef}
+        className={`bg-[#24283b] max-h-[90%] overflow-scroll no-scrollbar relative border border-[#414868] terminal-window h-fit  max-w-4xl min-w-[60%] mx-auto rounded-lg shadow-2xl  max-sm:max-w-[90%] transition-all duration-100`}
       >
         {/* Your AnimatePresence and Penguin popup JSX can remain here */}
         <AnimatePresence>
@@ -357,7 +373,7 @@ const Terminal: React.FC = () => {
                 stiffness: 100,
                 damping: 14,
               }}
-              className="absolute -top-32  left-0 right-0 z-[100] grid grid-cols-3  rounded-b-xl shadow-2xl sm:p-6"
+              className="absolute -top-32  left-0 right-0 z-[100] grid grid-cols-3 text-white  rounded-b-xl shadow-2xl sm:p-6"
             >
               <img
                 src="https://media.tenor.com/staU78dYIK4AAAAi/working-work.gif"
@@ -421,7 +437,11 @@ const Terminal: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
                     duration: 0.4,
-                    scale: { type: 'spring', visualDuration: 0.4, bounce: 0.5 },
+                    scale: {
+                      type: 'spring',
+                      visualDuration: 0.4,
+                      bounce: 0.5,
+                    },
                   }}
                 >
                   <img
