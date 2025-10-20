@@ -13,12 +13,24 @@ import ExperienceCard from './experience-card';
 import { div, output } from 'framer-motion/client';
 import MaximizeBar from './maximize-bar';
 import { EmailIcon, GitHubIcon, LinkedInIcon, XIcon } from '../icons/icons';
+import SkillsComponent from './Skills';
 
-type commandType = 'whoami' | 'experience' | 'contact' | 'help' | 'clear';
+type commandType =
+  | 'whoami'
+  | 'experience'
+  | 'contact'
+  | 'help'
+  | 'clear'
+  | 'skills';
 type aliasedCommandType = 'ls' | 'abandon';
 const aliasedCommandList = ['ls', 'abandon'] as const;
-const initialCommands: commandType[] = ['whoami', 'experience', 'contact'];
-// const initialCommands: commandType[] = ['experience'];
+const initialCommands: commandType[] = [
+  'whoami',
+  'experience',
+  'contact',
+  'skills',
+];
+// const initialCommands: commandType[] = ['skills'];
 
 // =================================================================
 // 1. Define Output Components
@@ -30,16 +42,17 @@ const WhoamiOutput: React.FC = () => {
 
   const isInView = useInView(ref, { once: true });
 
-  const text =
-    'You could say I have a healthy obsession with building things. From complex software platforms to a streamlined command-line workflow, I’m driven by the process of turning a great idea into an efficient reality.';
+  // You could say I have a healthy obsession with building things. From complex software platforms to a streamlined command-line workflow, I’m driven by the process of turning a great idea into an efficient reality.
+  const text = `
+Hey! I’m Phaneendra Pilli — a full-stack developer with hands-on experience designing, building, and deploying production-grade web platforms. I love turning complex problems into simple, efficient solutions that actually make a difference.
+
+I primarily work with TypeScript across the stack — Angular, Next.js, and NestJS — and use PostgreSQL, Docker, and Nginx for backend and deployment workflows. I’m currently working at InterviewBuddy, where I help build real-time communication systems, payment gateways, AI-driven interviews, and assessment platforms used by thousands of learners.
+
+I’m passionate about clean architecture, automation, and the joy of building products that are fast, reliable, and delightful to use.
+    `;
   return (
     <div>
-      <strong className="text-base  sm:text-2xl text-white">
-        {/* Hello there!, I'm */}
-        Phaneendra Pilli
-        <p className="text-sm font-normal">Software Developer</p>
-      </strong>
-      <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:items-center">
+      <strong className="text-base  sm:text-2xl text-white flex gap-3">
         <motion.h2
           ref={ref}
           initial={{ filter: 'blur(20px)', opacity: 0 }}
@@ -54,9 +67,30 @@ const WhoamiOutput: React.FC = () => {
             className="w-24 min-w-[96px] h-24 rounded-md"
           />
         </motion.h2>
-        <p className="mt-2 text-white w-full" ref={ref}>
-          <div className="font-bold">About me.</div>
-          {text.split('').map((letter, index) => (
+        <div>
+          {/* Hello there!, I'm */}
+          Phaneendra Pilli
+          <p className="text-sm font-normal">Software Developer</p>
+          <div className="flex gap-4 mt-2">
+            <a href="https://github.com/phaneendra24" target="_blank">
+              <GitHubIcon />
+            </a>
+
+            <a href="https://linkedin.com/in/phaneendra-pilli/" target="_blank">
+              <LinkedInIcon />
+            </a>
+
+            <a href="https://x.com/phaneendra_24" target="_blank">
+              <XIcon />
+            </a>
+          </div>
+        </div>
+      </strong>
+      <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:items-center">
+        <div className="mt-2 text-white w-full" ref={ref}>
+          <p className="font-bold">About me.</p>
+          {text}
+          {/* {text.split('').map((letter, index) => (
             <motion.span
               key={index}
               initial={{ opacity: 0 }}
@@ -65,8 +99,8 @@ const WhoamiOutput: React.FC = () => {
             >
               {letter}
             </motion.span>
-          ))}
-        </p>
+          ))} */}
+        </div>
       </div>
     </div>
   );
@@ -74,33 +108,6 @@ const WhoamiOutput: React.FC = () => {
 
 const ExperienceOutput: React.FC = () => (
   <div className="flex flex-col gap-4">
-    {/* <div>
-      <span className="project-name">
-        -rw-r--r-- 1 phaneendra dev 4.2K Oct 13 20:00
-        InterviewBuddy_Website_Relaunch
-      </span>
-      <span className="output-text">
-        Sole developer for the company's revamped website. Built from scratch
-        using Next.js, engineered payment systems with Razorpay/PayPal, and
-        deployed in a Dockerized environment.
-      </span>
-      <span className="tech-stack">
-        [Next.js] [TypeScript] [PostgreSQL] [Docker] [Nginx]
-      </span>
-    </div>
-    <div>
-      <span className="project-name">
-        -rw-r--r-- 1 phaneendra dev 3.8K Jul 22 14:30 B2C_Interview_Platform
-      </span>
-      <span className="output-text">
-        Lead developer for the B2C portal. Architected and built core features
-        including real-time video interviews with Twilio, secure assessments,
-        and complex booking flows.
-      </span>
-      <span className="tech-stack">
-        [Angular] [NestJS] [Twilio] [FFmpeg] [WebSockets]
-      </span>
-    </div> */}
     <ExperienceCard />
   </div>
 );
@@ -155,6 +162,12 @@ const HelpOutput: React.FC<HelpOutputProps> = ({ commands }) => (
         <span className="output-text">- {description}</span>
       </div>
     ))}
+  </div>
+);
+
+const SkillsOutput: React.FC = () => (
+  <div>
+    <SkillsComponent />
   </div>
 );
 
@@ -229,6 +242,14 @@ const Terminal: React.FC = () => {
         output: (
           <AnimationLayoutForCommand>
             <HelpOutput commands={{}} />
+          </AnimationLayoutForCommand>
+        ),
+      },
+      skills: {
+        description: 'View my skills.',
+        output: (
+          <AnimationLayoutForCommand>
+            <SkillsOutput commands={{}} />
           </AnimationLayoutForCommand>
         ),
       },
@@ -377,21 +398,19 @@ const Terminal: React.FC = () => {
   };
 
   return (
-    <div
-      className={`w-full h-screen flex flex-col sm:items-center mt-5 transition-all duration-300 ease-linear `}
-    >
+    <div className={`w-full h-full no-scrollbar   overflow-x-hidden  mt-5 `}>
       <div
-        className={`relative h-[90%] max-w-4xl min-w-[60%] max-sm:max-w-[90%] mx-auto transition-all duration-300 ease-linear
+        className={`relative h-[90%] max-w-4xl min-w-[60%] max-sm:max-w-[90%] mx-auto transition-all duration-300 ease-linear no-scrollbar
 ${
   showPenguin || ShowMailMe
-    ? 'max-sm:translate-y-24 translate-y-16  transition-all duration-300 ease-linear '
+    ? 'max-sm:translate-y-24 translate-y-24 transition-all duration-300 ease-linear '
     : ''
 }
         `}
       >
         <div
           ref={terminalRef}
-          className={`bg-[#24283b]  h-full w-full   overflow-scroll no-scrollbar  border border-[#414868] terminal-window     rounded-lg shadow-2xl   transition-all duration-100
+          className={`bg-[#24283b] no-scrollbar  max-h-full w-full   overflow-scroll no-scrollbar  border border-[#414868] terminal-window     rounded-lg shadow-2xl   transition-all duration-100
             `}
         >
           {/* Your AnimatePresence and Penguin popup JSX can remain here */}
@@ -426,14 +445,14 @@ ${
                   stiffness: 100,
                   damping: 14,
                 }}
-                className="absolute -top-16  left-0 right-0 z-[100] flex items-center "
+                className="absolute -top-20  left-0 right-0 z-[100] flex items-center "
               >
-                <div className="  relative mt-3 text-center text-gray-200 font-mono text-base px-4 py-2 rounded-xl flex gap-1 items-end">
+                <div className="  relative  text-center text-gray-200 font-mono text-base px-4 py-2 rounded-xl flex flex-col sm:flex-row gap-1   sm:items-end">
                   You can reach out to me
                   <a
                     href="mailto:phaneendrapilli777@gmail.com"
                     rel="noopener noreferrer"
-                    className=" flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
+                    className="  text-blue-400 text-start hover:text-blue-300 font-semibold transition-transform hover:scale-105"
                   >
                     @phaneendrapilli777
                   </a>
@@ -480,7 +499,7 @@ ${
           {/* Terminal Body */}
           <div
             ref={terminalBodyRef}
-            className="p-3 sm:p-6 text-sm sm:text-base whitespace-pre-wrap min-h-[600px] overflow-y-auto"
+            className="p-3 sm:p-6 text-sm sm:text-base whitespace-pre-wrap  overflow-y-auto no-scrollbar min-h-[600px] transition-all duration-200 ease-in"
             onClick={focusInput}
           >
             {lines.map((line, index) => (
@@ -495,11 +514,14 @@ ${
               onKeyDown={handleKeyDown}
               onChange={(e) => setInput(e.target.value)}
             />
-            {lines.length === 0 && "Try 'help' for commands"}
+            <div className="text-gray-500">
+              {lines.length === 0 &&
+                'Type `help` to see the list of available commands.'}
+            </div>
           </div>
         </div>
 
-        <div className="pb-10">
+        <div className="pb-10 h-[5%]">
           <div className=" border-t border-gray-700 mt-10 text-center pt-5 min-w-[60%] max-sm:max-w-[90%] text-gray-400">
             © 2025 Phaneendra. All rights reserved.
           </div>
