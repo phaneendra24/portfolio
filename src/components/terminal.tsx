@@ -10,10 +10,13 @@ import React, {
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import './Terminal.css'; // Your existing CSS file
 import ExperienceCard from './experience-card';
+import { div, output } from 'framer-motion/client';
+import MaximizeBar from './maximize-bar';
+import { EmailIcon, GitHubIcon, LinkedInIcon } from '../icons/icons';
 
 type commandType = 'whoami' | 'experience' | 'contact' | 'help' | 'clear';
-type aliasedCommandType = 'ls';
-const aliasedCommandList = ['ls'] as const;
+type aliasedCommandType = 'ls' | 'abandon';
+const aliasedCommandList = ['ls', 'abandon'] as const;
 const initialCommands: commandType[] = ['whoami', 'experience', 'contact'];
 // const initialCommands: commandType[] = ['experience'];
 
@@ -31,8 +34,9 @@ const WhoamiOutput: React.FC = () => {
     'You could say I have a healthy obsession with building things. From complex software platforms to a streamlined command-line workflow, I’m driven by the process of turning a great idea into an efficient reality.';
   return (
     <div>
-      <strong className="text-base  sm:text-xl text-white">
-        Phaneendra Pilli. Full Stack Developer.
+      <strong className="text-base  sm:text-2xl text-white">
+        Hello there!, I'm Phaneendra Pilli.
+        <p>Full Stack Developer.</p>
       </strong>
       <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:items-center">
         <motion.h2
@@ -40,7 +44,7 @@ const WhoamiOutput: React.FC = () => {
           initial={{ filter: 'blur(20px)', opacity: 0 }}
           animate={isInView ? { filter: 'blur(0px)', opacity: 1 } : {}}
           transition={{ duration: 0.5 }}
-          className="text-xl text-center sm:text-4xl font-bold tracking-tighter md:text-6xl md:leading-[4rem]"
+          className=" text-center  font-bold tracking-tighter  md:leading-[4rem] flex"
         >
           <img
             src="/me.jpeg"
@@ -100,8 +104,11 @@ const ExperienceOutput: React.FC = () => (
 );
 
 const ContactOutput: React.FC = () => (
-  <div className="grid grid-cols-[auto_1fr] gap-x-4">
-    <span className="output-text">github:</span>
+  <div className="grid grid-cols-[auto_1fr] gap-y-2 gap-x-4">
+    <span className="output-text flex gap-1 items-center">
+      <GitHubIcon />
+      github:
+    </span>
     <a
       href="https://github.com/phaneendra24"
       target="_blank"
@@ -110,7 +117,10 @@ const ContactOutput: React.FC = () => (
     >
       github.com/phaneendra24
     </a>
-    <span className="output-text">linkedin:</span>
+    <span className="output-text flex gap-1 items-center">
+      <LinkedInIcon />
+      linkedin:
+    </span>
     <a
       href="https://linkedin.com/in/phaneendra-pilli/"
       target="_blank"
@@ -119,7 +129,10 @@ const ContactOutput: React.FC = () => (
     >
       linkedin.com/in/phaneendra-pilli
     </a>
-    <span className="output-text">email:</span>
+    <span className="output-text flex gap-1 items-center">
+      <EmailIcon />
+      email:
+    </span>
     <a href="mailto:phaneendrapilli777@gmail.com" className="contact-link">
       phaneendrapilli777@gmail.com
     </a>
@@ -144,8 +157,8 @@ const HelpOutput: React.FC<HelpOutputProps> = ({ commands }) => (
 );
 
 const CommandNotFound: React.FC<{ command: string }> = ({ command }) => (
-  <div>
-    <span className="error">bash: command not found: {command}</span>
+  <div className="gap-1 flex">
+    <span className="error">bash: command not found: {command}.</span>
     <span className="output-text">
       Try 'help' for a list of available commands.
     </span>
@@ -217,7 +230,11 @@ const Terminal: React.FC = () => {
           </AnimationLayoutForCommand>
         ),
       },
-      clear: { description: 'Clears the terminal screen.', output: null }, // 'clear' is a special case
+      clear: {
+        description:
+          'Clears the terminal screen. And and guess what you can use cntrl + l too',
+        output: null,
+      }, // 'clear' is a special case
     }),
     []
   );
@@ -228,6 +245,10 @@ const Terminal: React.FC = () => {
   // Aliases for commands
   const aliasedCommands = {
     ls: commands.help,
+    abandon: {
+      description: '',
+      output: null,
+    },
   };
 
   // Focus input on click anywhere in the terminal
@@ -244,33 +265,33 @@ const Terminal: React.FC = () => {
   }, [lines]);
 
   // Initial animation sequence
-
-  useEffect(() => {
-    const runInitialSequence = async () => {
-      for (const command of initialCommands) {
-        // Add the command line
-        setLines((prev) => [
-          ...prev,
-          <Prompt key={`prompt-${prev.length}`} command={command} />,
-        ]);
-        await new Promise((res) => setTimeout(res, 500)); // Wait before showing output
-        // Add the output
-        setLines((prev) => [
-          ...prev,
-          <div key={`output-${prev.length}`}>{commands[command].output}</div>,
-        ]);
-        await new Promise((res) => setTimeout(res, 800)); // Wait before next command
-      }
-      // Add final help message
+  const runInitialSequence = async () => {
+    for (const command of initialCommands) {
+      // Add the command line
       setLines((prev) => [
         ...prev,
-        <div key={`final-msg-${prev.length}`} className="output-text mt-4">
-          Type `help` to see the list of available commands.
-        </div>,
+        <Prompt key={`prompt-${prev.length}`} command={command} />,
       ]);
+      await new Promise((res) => setTimeout(res, 500)); // Wait before showing output
+      // Add the output
+      setLines((prev) => [
+        ...prev,
+        <div key={`output-${prev.length}`}>{commands[command].output}</div>,
+      ]);
+      await new Promise((res) => setTimeout(res, 800)); // Wait before next command
+    }
+    // Add final help message
+    setLines((prev) => [
+      ...prev,
+      <div key={`final-msg-${prev.length}`} className="output-text mt-4">
+        Type `help` to see the list of available commands.
+      </div>,
+    ]);
 
-      scrollToBottom();
-    };
+    scrollToBottom();
+  };
+
+  useEffect(() => {
     runInitialSequence();
   }, [commands]); // Rerun if commands object changes
 
@@ -342,6 +363,11 @@ const Terminal: React.FC = () => {
     } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
       e.preventDefault();
       setLines([]);
+    } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
+      e.preventDefault();
+      handleCommandSubmit('abandon');
+      // setInput('');
+      console.log('fired cntl c');
     } else if (e.key === 'Tab') {
       e.preventDefault();
       handleCommandSubmit('ls');
@@ -350,162 +376,144 @@ const Terminal: React.FC = () => {
 
   return (
     <div
-      className={`w-full h-screen flex sm:items-center mt-5 transition-all duration-300 ease-linear   ${
-        showPenguin || ShowMailMe
-          ? 'max-sm:translate-y-24  transition-all duration-300 ease-linear '
-          : ''
-      }`}
+      className={`w-full h-screen flex sm:items-center mt-5 transition-all duration-300 ease-linear `}
     >
       <div
-        ref={terminalRef}
-        className={`bg-[#24283b] max-h-[90%] overflow-scroll no-scrollbar relative border border-[#414868] terminal-window h-fit  max-w-4xl min-w-[60%] mx-auto rounded-lg shadow-2xl  max-sm:max-w-[90%] transition-all duration-100`}
+        className={`relative h-[90%] max-w-4xl min-w-[60%] max-sm:max-w-[90%] mx-auto transition-all duration-300 ease-linear
+${
+  showPenguin || ShowMailMe
+    ? 'max-sm:translate-y-24 translate-y-16  transition-all duration-300 ease-linear '
+    : ''
+}
+        `}
       >
-        {/* Your AnimatePresence and Penguin popup JSX can remain here */}
-        <AnimatePresence>
-          {showPenguin && (
-            <motion.div
-              key="penguin"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              transition={{
-                type: 'spring',
-                stiffness: 100,
-                damping: 14,
-              }}
-              className="absolute -top-32  left-0 right-0 z-[100] grid grid-cols-3 text-white  rounded-b-xl shadow-2xl sm:p-6"
-            >
-              <img
-                src="https://media.tenor.com/staU78dYIK4AAAAi/working-work.gif"
-                alt="Tux Penguin"
-                className="w-20 order-2 max-sm:col-span-2 sm:order-1 h-20 animate-bounce-slow "
-              />
-              <div className="order-1 sm:order-2 text-left w-full max-sm:col-span-3 text-xs  relative mt-3  text-gray-200 font-mono  sm:bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
-                Maybe you want to view my resume?
-              </div>
-              <a
-                href="https://your-public-resume-link.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 order-3 col-span-1 flex justify-end items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                View Resume
-              </a>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {ShowMailMe && (
-            <motion.div
-              key="mailme"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              transition={{
-                type: 'spring',
-                stiffness: 100,
-                damping: 14,
-              }}
-              className="absolute -top-32  left-0 right-0 z-[100] flex items-center justify-between  rounded-b-xl shadow-2xl p-6"
-            >
-              <div className=" max-sm:hidden relative mt-3 text-center text-gray-200 font-mono text-base bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
-                Maybe you want to Email me?
-              </div>
-              <a
-                href="mailto:phaneendrapilli777@gmail.com"
-                rel="noopener noreferrer"
-                className="mt-3 flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
-              >
-                <div className="box" data-state={ShowMailMe} />
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    duration: 0.4,
-                    scale: {
-                      type: 'spring',
-                      visualDuration: 0.4,
-                      bounce: 0.5,
-                    },
-                  }}
-                >
-                  <img
-                    src="/mail.png"
-                    alt="Mail icon"
-                    className="w-10 h-10 bg-transparent "
-                  />
-                </motion.div>
-                @phaneendrapilli777
-              </a>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Terminal Header */}
-        <div className="bg-gray-800 px-4 py-2 flex items-center rounded-t-xl relative z-20">
-          {/* Window Controls */}
-          <div className="flex space-x-2">
-            <div
-              onClick={() => {
-                setShowPenguin(false);
-                setShowMailMe(false);
-              }}
-              className="w-3 h-3 rounded-full bg-red-500 cursor-pointer"
-            ></div>
-            <div
-              className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer"
-              onClick={() => {
-                setShowMailMe(false);
-                setShowPenguin(true);
-              }}
-            ></div>
-            <div
-              className="w-3 h-3 rounded-full bg-green-500 cursor-pointer"
-              onClick={() => {
-                setShowPenguin(false);
-                setShowMailMe(true);
-              }}
-            ></div>
-          </div>
-          <div className="flex-grow text-center text-sm text-gray-400">
-            phaneendra -- -bash
-          </div>
-        </div>
-
-        {/* Terminal Body */}
         <div
-          ref={terminalBodyRef}
-          className="p-6 text-sm sm:text-base whitespace-pre-wrap min-h-[600px] overflow-y-auto"
-          onClick={focusInput}
+          ref={terminalRef}
+          className={`bg-[#24283b]  h-full w-full   overflow-scroll no-scrollbar  border border-[#414868] terminal-window     rounded-lg shadow-2xl   transition-all duration-100
+            `}
         >
-          {lines.map((line, index) => (
-            <div key={index} className="mb-2">
-              {line}
+          {/* Your AnimatePresence and Penguin popup JSX can remain here */}
+          <AnimatePresence>
+            {showPenguin && (
+              <motion.div
+                key="penguin"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                // exit={{ opacity: 0, y: 40 }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 100,
+                  damping: 14,
+                }}
+                className="absolute -top-24  left-0 right-0 z-[100] flex justify-between items-end cursor-pointer  rounded-b-xl "
+              >
+                <MaximizeBar />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {ShowMailMe && (
+              <motion.div
+                key="mailme"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 40 }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 100,
+                  damping: 14,
+                }}
+                className="absolute -top-32  left-0 right-0 z-[100] flex items-center justify-between  rounded-b-xl shadow-2xl p-6"
+              >
+                <div className=" max-sm:hidden relative mt-3 text-center text-gray-200 font-mono text-base bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
+                  Maybe you want to Email me?
+                </div>
+                <a
+                  href="mailto:phaneendrapilli777@gmail.com"
+                  rel="noopener noreferrer"
+                  className="mt-3 flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
+                >
+                  <div className="box" data-state={ShowMailMe} />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.4,
+                      scale: {
+                        type: 'spring',
+                        visualDuration: 0.4,
+                        bounce: 0.5,
+                      },
+                    }}
+                  >
+                    <img
+                      src="/mail.png"
+                      alt="Mail icon"
+                      className="w-10 h-10 bg-transparent "
+                    />
+                  </motion.div>
+                  @phaneendrapilli777
+                </a>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Terminal Header */}
+          <div className="bg-gray-800 px-4 py-2 flex items-center rounded-t-xl relative z-20">
+            {/* Window Controls */}
+            <div className="flex space-x-2">
+              <div
+                onClick={() => {
+                  setShowPenguin(false);
+                  setShowMailMe(false);
+                  if (!showPenguin && !ShowMailMe) {
+                    handleCommandSubmit('clear');
+                    runInitialSequence();
+                  }
+                }}
+                className="w-3 h-3 rounded-full bg-red-500 cursor-pointer"
+              ></div>
+              <div
+                className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer"
+                onClick={() => {
+                  setShowMailMe(false);
+                  setShowPenguin(!showPenguin);
+                }}
+              ></div>
+              <div
+                className="w-3 h-3 rounded-full bg-green-500 cursor-pointer"
+                onClick={() => {
+                  setShowPenguin(false);
+                  setShowMailMe(!ShowMailMe);
+                }}
+              ></div>
             </div>
-          ))}
-          <Prompt
-            command={input}
-            isInput={true}
-            inputRef={inputRef}
-            onKeyDown={handleKeyDown}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          {lines.length === 0 && "Try 'help' for commands"}
+            <div className="flex-grow text-center text-sm text-gray-400">
+              phaneendra -- -bash
+            </div>
+          </div>
+
+          {/* Terminal Body */}
+          <div
+            ref={terminalBodyRef}
+            className="p-3 sm:p-6 text-sm sm:text-base whitespace-pre-wrap min-h-[600px] overflow-y-auto"
+            onClick={focusInput}
+          >
+            {lines.map((line, index) => (
+              <div key={index} className="mb-2">
+                {line}
+              </div>
+            ))}
+            <Prompt
+              command={input}
+              isInput={true}
+              inputRef={inputRef}
+              onKeyDown={handleKeyDown}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            {lines.length === 0 && "Try 'help' for commands"}
+          </div>
         </div>
       </div>
     </div>
@@ -545,7 +553,7 @@ const Prompt: React.FC<PromptProps> = ({
         autoComplete="off"
       />
     ) : (
-      <span className="command">{command}</span>
+      <span className="command">{command != 'abandon' && command}</span>
     )}
   </div>
 );
