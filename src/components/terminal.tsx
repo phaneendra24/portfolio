@@ -12,7 +12,7 @@ import './Terminal.css'; // Your existing CSS file
 import ExperienceCard from './experience-card';
 import { div, output } from 'framer-motion/client';
 import MaximizeBar from './maximize-bar';
-import { EmailIcon, GitHubIcon, LinkedInIcon } from '../icons/icons';
+import { EmailIcon, GitHubIcon, LinkedInIcon, XIcon } from '../icons/icons';
 
 type commandType = 'whoami' | 'experience' | 'contact' | 'help' | 'clear';
 type aliasedCommandType = 'ls' | 'abandon';
@@ -35,8 +35,9 @@ const WhoamiOutput: React.FC = () => {
   return (
     <div>
       <strong className="text-base  sm:text-2xl text-white">
-        Hello there!, I'm Phaneendra Pilli.
-        <p>Full Stack Developer.</p>
+        {/* Hello there!, I'm */}
+        Phaneendra Pilli
+        <p className="text-sm font-normal">Software Developer</p>
       </strong>
       <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:items-center">
         <motion.h2
@@ -54,6 +55,7 @@ const WhoamiOutput: React.FC = () => {
           />
         </motion.h2>
         <p className="mt-2 text-white w-full" ref={ref}>
+          <div className="font-bold">About me.</div>
           {text.split('').map((letter, index) => (
             <motion.span
               key={index}
@@ -331,7 +333,7 @@ const Terminal: React.FC = () => {
 
   const scrollToBottom = () => {
     setTimeout(() => {
-      if (inputRef.current) {
+      if (inputRef.current && !showPenguin && !ShowMailMe) {
         // terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
 
         inputRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -376,7 +378,7 @@ const Terminal: React.FC = () => {
 
   return (
     <div
-      className={`w-full h-screen flex sm:items-center mt-5 transition-all duration-300 ease-linear `}
+      className={`w-full h-screen flex flex-col sm:items-center mt-5 transition-all duration-300 ease-linear `}
     >
       <div
         className={`relative h-[90%] max-w-4xl min-w-[60%] max-sm:max-w-[90%] mx-auto transition-all duration-300 ease-linear
@@ -424,37 +426,18 @@ ${
                   stiffness: 100,
                   damping: 14,
                 }}
-                className="absolute -top-32  left-0 right-0 z-[100] flex items-center justify-between  rounded-b-xl shadow-2xl p-6"
+                className="absolute -top-16  left-0 right-0 z-[100] flex items-center "
               >
-                <div className=" max-sm:hidden relative mt-3 text-center text-gray-200 font-mono text-base bg-[#1f2937] px-4 py-2 rounded-xl penguin-message">
-                  Maybe you want to Email me?
-                </div>
-                <a
-                  href="mailto:phaneendrapilli777@gmail.com"
-                  rel="noopener noreferrer"
-                  className="mt-3 flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
-                >
-                  <div className="box" data-state={ShowMailMe} />
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      scale: {
-                        type: 'spring',
-                        visualDuration: 0.4,
-                        bounce: 0.5,
-                      },
-                    }}
+                <div className="  relative mt-3 text-center text-gray-200 font-mono text-base px-4 py-2 rounded-xl flex gap-1 items-end">
+                  You can reach out to me
+                  <a
+                    href="mailto:phaneendrapilli777@gmail.com"
+                    rel="noopener noreferrer"
+                    className=" flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-transform hover:scale-105"
                   >
-                    <img
-                      src="/mail.png"
-                      alt="Mail icon"
-                      className="w-10 h-10 bg-transparent "
-                    />
-                  </motion.div>
-                  @phaneendrapilli777
-                </a>
+                    @phaneendrapilli777
+                  </a>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -513,6 +496,33 @@ ${
               onChange={(e) => setInput(e.target.value)}
             />
             {lines.length === 0 && "Try 'help' for commands"}
+          </div>
+        </div>
+
+        <div className="pb-10">
+          <div className=" border-t border-gray-700 mt-10 text-center pt-5 min-w-[60%] max-sm:max-w-[90%] text-gray-400">
+            © 2025 Phaneendra. All rights reserved.
+          </div>
+
+          <div className="mt-4  flex gap-6 items-center px-4 py-2 border border-gray-600 outline-none rounded-xl w-fit mx-auto">
+            <a href="https://github.com/phaneendra24" target="_blank">
+              <GitHubIcon />
+            </a>
+
+            <a href="https://linkedin.com/in/phaneendra-pilli/" target="_blank">
+              <LinkedInIcon />
+            </a>
+
+            <a href="https://x.com/phaneendra_24" target="_blank">
+              <XIcon />
+            </a>
+            <div className="border-l border-gray-300 pl-2">
+              <img
+                src="/profile.png"
+                alt="My profile"
+                className="w-8 h-8 rounded-full "
+              />
+            </div>
           </div>
         </div>
       </div>

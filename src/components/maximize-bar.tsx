@@ -41,6 +41,19 @@ const MaximizeBar: React.FC = () => {
 
       {/* Right Modules */}
       <div className="flex items-center space-x-2 gap-3">
+        <motion.a
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+          className=" max-sm:hidden border-r pr-3 border-gray-500 outline-none"
+          href="http://phaneendra.cloud"
+        >
+          <img
+            src="/profile.png"
+            alt="My profile"
+            className="w-8 h-8 rounded-full"
+          />{' '}
+        </motion.a>
+
         <motion.div
           whileHover={{ scale: 1.2 }}
           whileTap={{ scale: 0.8 }}

@@ -66,8 +66,15 @@ export default function ExperienceCard() {
       <div className=" w-full center">
         <motion.div className="flex-1" variants={containerVariants}>
           <motion.div variants={itemVariants}>
-            <span className="text-green-400 ">
-              InterviewBuddy (July 2024- Present)
+            <span className="text-green-400 flex gap-1">
+              InterviewBuddy (July 2024- Present) -
+              <a
+                href="https://interviewbuddy.net"
+                target="_blank"
+                className="text-blue-400 underline"
+              >
+                visit
+              </a>
             </span>
           </motion.div>
 
