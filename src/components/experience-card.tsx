@@ -43,6 +43,16 @@ export default function ExperienceCard() {
     'Docker',
     'Twilio',
   ];
+
+  const mainExperiencePoints = [
+    'Led the development of the B2C video interview platform, focusing on scalability and real-time features.',
+    'Engineered the company website relaunch, integrating Razorpay and PayPal for seamless payments.',
+    'Orchestrated Dockerized deployments using Nginx and Portainer, improving scalability and service reliability.',
+    'Built a flexible assessment engine supporting diverse question types with secure environments for candidates.',
+    'Integrated Twilio for real-time video interviews and gained hands-on experience with FFmpeg for video processing and playback optimization.',
+    'Working on a Gen-AI Interview Service that enables intelligent feedback and automated evaluation.',
+  ];
+
   const Line = ({ className = '' }) => (
     <div
       className={cn(
@@ -91,7 +101,7 @@ export default function ExperienceCard() {
             <span className="text-white">Full Stack Developer</span>
 
             <span className="text-pink-400 font-bold">Period:</span>
-            <span className="text-white">Nov 2024 - Present</span>
+            <span className="text-white">July 2024 - Present</span>
 
             <span className="text-pink-400 font-bold">Focus:</span>
             <span className="text-white">
@@ -102,18 +112,14 @@ export default function ExperienceCard() {
           <motion.div variants={itemVariants} className="mt-4 text-sm">
             <p className="text-pink-400 font-bold mb-2">Highlights:</p>
             <ul className="list-none text-white pl-2">
-              <li>
-                <span className="text-cyan-400 mr-2">{'>'}</span>Led development
-                of B2C video interview platform.
-              </li>
-              <li>
-                <span className="text-cyan-400 mr-2">{'>'}</span>Engineered
-                company website relaunch with payment systems.
-              </li>
-              <li>
-                <span className="text-cyan-400 mr-2">{'>'}</span>Managed
-                Dockerized deployments for all services.
-              </li>
+              {mainExperiencePoints.map((text, index) => {
+                return (
+                  <li key={index + 21929} className="py-1">
+                    <span className="text-cyan-400 mr-2">{'>'}</span>
+                    {text}
+                  </li>
+                );
+              })}
             </ul>
           </motion.div>
 
@@ -152,23 +158,26 @@ export default function ExperienceCard() {
           <span className="text-white">Full Stack Developer Intern</span>
 
           <span className="text-pink-400 font-bold">Period:</span>
-          <span className="text-white">Jun 2024 - Oct 2024</span>
+          <span className="text-white">Jan 2024 - Jun 2024</span>
         </motion.div>
 
         <motion.div variants={itemVariants} className="mt-4 text-sm">
           <p className="text-pink-400 font-bold mb-2">Highlights:</p>
           <ul className="list-none text-white pl-2">
             <li>
-              <span className="text-cyan-400 mr-2">{'>'}</span>Contributed to
-              front-end features using Angular.
+              <span className="text-cyan-400 mr-2">{'>'}</span>
+              Rebuilt and redesigned several critical modules of the company’s
+              B2B interview platform to improve performance and maintainability.
+            </li>
+            <li className="py-1">
+              <span className="text-cyan-400 mr-2">{'>'}</span>
+              Contributed to a major deployment with the successful launch of
+              version 2.7 of the platform.
             </li>
             <li>
-              <span className="text-cyan-400 mr-2">{'>'}</span>Assisted in the
-              development of RESTful API endpoints with NestJS.
-            </li>
-            <li>
-              <span className="text-cyan-400 mr-2">{'>'}</span>Gained hands-on
-              experience with Docker and the full development lifecycle.
+              <span className="text-cyan-400 mr-2">{'>'}</span>
+              Developed email automation and notification systems using React
+              Email.
             </li>
           </ul>
         </motion.div>

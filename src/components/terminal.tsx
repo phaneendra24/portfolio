@@ -44,7 +44,7 @@ const WhoamiOutput: React.FC = () => {
 
   // You could say I have a healthy obsession with building things. From complex software platforms to a streamlined command-line workflow, I’m driven by the process of turning a great idea into an efficient reality.
   const text = `
-Hey! I’m Phaneendra Pilli — a full-stack developer with hands-on experience designing, building, and deploying production-grade web platforms. I love turning complex problems into simple, efficient solutions that actually make a difference.
+Hey! I’m Phaneendra Pilli — a full-stack developer who loves building, maintaining, and deploying web applications. With 1.5 years of hands-on experience across the stack, I enjoy turning ideas into products that are stable, scalable, and used by real people every day.
 
 I primarily work with TypeScript across the stack — Angular, Next.js, and NestJS — and use PostgreSQL, Docker, and Nginx for backend and deployment workflows. I’m currently working at InterviewBuddy, where I help build real-time communication systems, payment gateways, AI-driven interviews, and assessment platforms used by thousands of learners.
 
