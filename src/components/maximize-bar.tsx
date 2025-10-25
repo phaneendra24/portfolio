@@ -95,7 +95,7 @@ const MaximizeBar: React.FC = () => {
         </motion.div>
 
         <a
-          href="https://your-public-resume-link.com"
+          href="/Phaneendra_Pilli_Resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
         >
