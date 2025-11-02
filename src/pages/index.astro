@@ -1,35 +1,32 @@
 ---
-import Icon from "astro-icon";
-import Layout from "../layouts/Layout.astro";
-import Terminal from "../components/terminal";
-
-
+import Icon from 'astro-icon';
+import Layout from '../layouts/Layout.astro';
+import Terminal from '../components/terminal';
+import PostHogLayout from '../layouts/PostHogLayout.astro';
 ---
 
 <script></script>
 
 <style>
-  .icon-items:hover{
-    border: 1px solid #6C63FF;
+  .icon-items:hover {
+    border: 1px solid #6c63ff;
     transition: 500ms ease-in;
-}
+  }
 
-.top-bar{
-  border-top: 1px solid;
-  border: 1px solid #6C63FF;
-  border-color: #6C63FF;
-  transition: border 0.5s ease-in;
-}
-.top-bar:hover{
-  border-top: 100%;
-
-}
+  .top-bar {
+    border-top: 1px solid;
+    border: 1px solid #6c63ff;
+    border-color: #6c63ff;
+    transition: border 0.5s ease-in;
+  }
+  .top-bar:hover {
+    border-top: 100%;
+  }
 </style>
 
 <Layout title="phaneendra">
   <main class="w-screen h-screen overflow-x-hidden">
-		<Terminal client:load />
-	</main>
-
-
+    <PostHogLayout client:load />
+    <Terminal client:load />
+  </main>
 </Layout>
