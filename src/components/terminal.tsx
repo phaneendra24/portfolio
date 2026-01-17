@@ -410,11 +410,47 @@ const Terminal: React.FC = () => {
     } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
       e.preventDefault();
       handleCommandSubmit('abandon');
-      // setInput('');
       console.log('fired cntl c');
     } else if (e.key === 'Tab') {
       e.preventDefault();
-      handleCommandSubmit('ls');
+      
+      // Get all available commands
+      const allCommands = ['whoami', 'experience', 'contact', 'help', 'clear', 'skills', 'resume', 'ls'];
+      const currentInput = input.trim().toLowerCase();
+      
+      if (currentInput === '') {
+        // If empty, show help
+        handleCommandSubmit('help');
+        return;
+      }
+      
+      // Find matching commands
+      const matches = allCommands.filter(cmd => cmd.startsWith(currentInput));
+      
+      if (matches.length === 1) {
+        // Single match - auto-complete
+        setInput(matches[0]);
+      } else if (matches.length > 1) {
+        // Multiple matches - show suggestions and complete common prefix
+        const commonPrefix = matches.reduce((prefix, cmd) => {
+          while (!cmd.startsWith(prefix)) {
+            prefix = prefix.slice(0, -1);
+          }
+          return prefix;
+        }, matches[0]);
+        
+        setInput(commonPrefix);
+        
+        // Show available options
+        setLines((prev) => [
+          ...prev,
+          <Prompt key={`prompt-${prev.length}`} command={currentInput} />,
+          <div key={`suggestions-${prev.length}`} className="text-[#7dcfff] mb-2">
+            {matches.join('  ')}
+          </div>,
+        ]);
+      }
+      // If no matches, do nothing
     }
   };
 
