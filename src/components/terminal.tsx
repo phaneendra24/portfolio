@@ -21,7 +21,8 @@ type commandType =
   | 'contact'
   | 'help'
   | 'clear'
-  | 'skills';
+  | 'skills'
+  | 'resume';
 type aliasedCommandType = 'ls' | 'abandon';
 const aliasedCommandList = ['ls', 'abandon'] as const;
 const initialCommands: commandType[] = [
@@ -171,6 +172,24 @@ const SkillsOutput: React.FC = () => (
   </div>
 );
 
+const ResumeOutput: React.FC = () => (
+  <div className="flex flex-col gap-3">
+    <p className="output-text">📄 Here's my resume:</p>
+    <a
+      href="/Phaneendra_Pilli_Resume.pdf"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-2 rounded-lg w-fit transition-all hover:scale-105"
+    >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      Download Resume (PDF)
+    </a>
+    <p className="text-gray-400 text-sm">Or view it directly in your browser by clicking the link above.</p>
+  </div>
+);
+
 const CommandNotFound: React.FC<{ command: string }> = ({ command }) => (
   <div className="gap-1 flex">
     <span className="error">bash: command not found: {command}.</span>
@@ -205,6 +224,7 @@ const Terminal: React.FC = () => {
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [showPenguin, setShowPenguin] = useState(false);
   const [ShowMailMe, setShowMailMe] = useState(false);
+  const [isInitialSequenceRunning, setIsInitialSequenceRunning] = useState(true);
 
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -249,7 +269,15 @@ const Terminal: React.FC = () => {
         description: 'View my skills.',
         output: (
           <AnimationLayoutForCommand>
-            <SkillsOutput commands={{}} />
+            <SkillsOutput />
+          </AnimationLayoutForCommand>
+        ),
+      },
+      resume: {
+        description: 'View/download my resume.',
+        output: (
+          <AnimationLayoutForCommand>
+            <ResumeOutput />
           </AnimationLayoutForCommand>
         ),
       },
@@ -279,39 +307,34 @@ const Terminal: React.FC = () => {
 
   useEffect(focusInput, []);
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    const el = terminalBodyRef.current;
-    if (el) {
-      el.scrollTop = el.scrollHeight;
-    }
-  }, [lines]);
+  // NOTE: Auto-scroll removed - only scroll when user manually types commands via scrollToBottom() in handleCommandSubmit
 
   // Initial animation sequence
   const runInitialSequence = async () => {
+    setIsInitialSequenceRunning(true);
     for (const command of initialCommands) {
       // Add the command line
       setLines((prev) => [
         ...prev,
         <Prompt key={`prompt-${prev.length}`} command={command} />,
       ]);
-      await new Promise((res) => setTimeout(res, 500)); // Wait before showing output
+      await new Promise((res) => setTimeout(res, 300)); // Brief pause before output
       // Add the output
       setLines((prev) => [
         ...prev,
         <div key={`output-${prev.length}`}>{commands[command].output}</div>,
       ]);
-      await new Promise((res) => setTimeout(res, 800)); // Wait before next command
+      await new Promise((res) => setTimeout(res, 400)); // Pause between commands
     }
     // Add final help message
     setLines((prev) => [
       ...prev,
       <div key={`final-msg-${prev.length}`} className="output-text mt-4">
-        Type `help` to see the list of available commands.
+        Type `help` to see the list of available commands. Try `resume` to download my resume!
       </div>,
     ]);
 
-    scrollToBottom();
+    setIsInitialSequenceRunning(false); // Re-enable scrolling after sequence completes
   };
 
   useEffect(() => {
@@ -355,8 +378,6 @@ const Terminal: React.FC = () => {
   const scrollToBottom = () => {
     setTimeout(() => {
       if (inputRef.current && !showPenguin && !ShowMailMe) {
-        // terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-
         inputRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }, 0);
@@ -398,7 +419,7 @@ const Terminal: React.FC = () => {
   };
 
   return (
-    <div className={`w-full h-full no-scrollbar   overflow-x-hidden  mt-5 `}>
+    <div className={`w-full h-full overflow-hidden mt-5`}>
       <div
         className={`relative h-[90%] max-w-4xl min-w-[60%] max-sm:max-w-[90%] mx-auto transition-all duration-300 ease-linear no-scrollbar
 ${
@@ -410,7 +431,7 @@ ${
       >
         <div
           ref={terminalRef}
-          className={`bg-[#24283b] no-scrollbar  max-h-full w-full   overflow-scroll no-scrollbar  border border-[#414868] terminal-window     rounded-lg shadow-2xl   transition-all duration-100
+          className={`bg-[#24283b] flex flex-col max-h-full w-full border border-[#414868] terminal-window rounded-lg shadow-2xl transition-all duration-100
             `}
         >
           {/* Your AnimatePresence and Penguin popup JSX can remain here */}
@@ -475,6 +496,7 @@ ${
                   }
                 }}
                 className="w-3 h-3 rounded-full bg-red-500 cursor-pointer"
+                title="Reset terminal"
               ></div>
               <div
                 className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer"
@@ -482,6 +504,7 @@ ${
                   setShowMailMe(false);
                   setShowPenguin(!showPenguin);
                 }}
+                title="Show social links & resume"
               ></div>
               <div
                 className="w-3 h-3 rounded-full bg-green-500 cursor-pointer"
@@ -489,17 +512,30 @@ ${
                   setShowPenguin(false);
                   setShowMailMe(!ShowMailMe);
                 }}
+                title="Quick contact"
               ></div>
             </div>
             <div className="flex-grow text-center text-sm text-gray-400">
               phaneendra -- -bash
             </div>
+            {/* Always visible Resume button */}
+            <a
+              href="/Phaneendra_Pilli_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white text-xs font-semibold px-3 py-1.5 rounded-full transition-all hover:scale-105 shadow-lg"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Resume
+            </a>
           </div>
 
-          {/* Terminal Body */}
+          {/* Terminal Body - SINGLE scroll container */}
           <div
             ref={terminalBodyRef}
-            className="p-3 sm:p-6 text-sm sm:text-base whitespace-pre-wrap  overflow-y-auto no-scrollbar min-h-[600px] transition-all duration-200 ease-in"
+            className="p-3 sm:p-6 text-sm sm:text-base whitespace-pre-wrap overflow-y-auto no-scrollbar flex-1 transition-all duration-200 ease-in"
             onClick={focusInput}
           >
             {lines.map((line, index) => (

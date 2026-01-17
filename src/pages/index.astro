@@ -3,6 +3,7 @@ import Icon from 'astro-icon';
 import Layout from '../layouts/Layout.astro';
 import Terminal from '../components/terminal';
 import PostHogLayout from '../layouts/PostHogLayout.astro';
+import TerminalAnimations from '../components/TerminalAnimations';
 ---
 
 <script></script>
@@ -26,6 +27,7 @@ import PostHogLayout from '../layouts/PostHogLayout.astro';
 
 <Layout title="Phaneendra">
   <main class="w-screen h-screen overflow-x-hidden">
+    <TerminalAnimations client:load />
     <PostHogLayout client:load />
     <Terminal client:load />
   </main>
