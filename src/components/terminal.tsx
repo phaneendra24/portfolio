@@ -71,7 +71,7 @@ I’m passionate about clean architecture, automation, and the joy of building p
         <div>
           {/* Hello there!, I'm */}
           Phaneendra Pilli
-          <p className="text-sm font-normal">Software Developer</p>
+          <p className="text-sm font-normal">Software Engineer</p>
           <div className="flex gap-4 mt-2">
             <a href="https://github.com/phaneendra24" target="_blank">
               <GitHubIcon />

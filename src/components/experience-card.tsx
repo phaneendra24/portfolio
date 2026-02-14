@@ -42,15 +42,21 @@ export default function ExperienceCard() {
     'PostgreSQL',
     'Docker',
     'Twilio',
+    'Socket.io',
+    'FFmpeg',
+    'Razorpay',
+    'Strapi CMS',
   ];
 
   const mainExperiencePoints = [
-    'Led the development of the B2C video interview platform, focusing on scalability and real-time features.',
-    'Engineered the company website relaunch, integrating Razorpay and PayPal for seamless payments.',
-    'Orchestrated Dockerized deployments using Nginx and Portainer, improving scalability and service reliability.',
-    'Built a flexible assessment engine supporting diverse question types with secure environments for candidates.',
-    'Integrated Twilio for real-time video interviews and gained hands-on experience with FFmpeg for video processing and playback optimization.',
-    'Working on a Gen-AI Interview Service that enables intelligent feedback and automated evaluation.',
+    'End-to-end development of the official website rebranding, making architectural decisions that resulted in improved SEO rankings and a 40% reduction in page load times.',
+    'Designed and implemented a real-time interview room using Twilio and Socket.io, enabling low-latency collaboration (video, code, whiteboard) and real-time event logging for debugging.',
+    'Built an adaptive \'Gen AI Interview\' module that processes candidate video responses using FFmpeg to drive context-aware follow-up questions and automated performance grading.',
+    'Implemented end-to-end payment systems supporting domestic (Razorpay) and international (PayPal) transactions, featuring a custom coupon management system for discounts and automated refund processing.',
+    'Reduced engineering dependency for content updates by integrating Strapi CMS, enabling the marketing team to publish blogs independently.',
+    'Worked on Dockerized deployments that improved system stability, contributing to 99.99% uptime and a ~40% reduction in MTTR through better debugging and hotfix workflows.',
+    'Developed a configurable assessment service supporting diverse question formats and enforced strict proctoring rules to ensure test integrity.',
+    'Designed scalable database schemas for complex features, optimizing query performance and ensuring data integrity.',
   ];
 
   const Line = ({ className = '' }) => (
@@ -98,7 +104,7 @@ export default function ExperienceCard() {
             className="grid grid-cols-[auto_1fr] gap-x-4 text-sm"
           >
             <span className="text-pink-400 font-bold">Role:</span>
-            <span className="text-white">Full Stack Developer</span>
+            <span className="text-white">Associate Software Development Engineer</span>
 
             <span className="text-pink-400 font-bold">Period:</span>
             <span className="text-white">July 2024 - Present</span>
@@ -155,7 +161,7 @@ export default function ExperienceCard() {
           className="grid grid-cols-[auto_1fr] gap-x-4 text-sm"
         >
           <span className="text-pink-400 font-bold">Role:</span>
-          <span className="text-white">Full Stack Developer Intern</span>
+          <span className="text-white">Software Engineer Intern</span>
 
           <span className="text-pink-400 font-bold">Period:</span>
           <span className="text-white">Jan 2024 - Jun 2024</span>
@@ -164,20 +170,13 @@ export default function ExperienceCard() {
         <motion.div variants={itemVariants} className="mt-4 text-sm">
           <p className="text-pink-400 font-bold mb-2">Highlights:</p>
           <ul className="list-none text-white pl-2">
-            <li>
+            <li className="py-1">
               <span className="text-cyan-400 mr-2">{'>'}</span>
-              Rebuilt and redesigned several critical modules of the company’s
-              B2B interview platform to improve performance and maintainability.
+              Refactored the core interview management module to improve code maintainability and secured platform data by implementing granular Role-Based Access Control (RBAC).
             </li>
             <li className="py-1">
               <span className="text-cyan-400 mr-2">{'>'}</span>
-              Contributed to a major deployment with the successful launch of
-              version 2.7 of the platform.
-            </li>
-            <li>
-              <span className="text-cyan-400 mr-2">{'>'}</span>
-              Developed email automation and notification systems using React
-              Email.
+              Engineered a transactional notification service using React Email, ensuring reliable delivery of interview schedules and updates to thousands of users.
             </li>
           </ul>
         </motion.div>
